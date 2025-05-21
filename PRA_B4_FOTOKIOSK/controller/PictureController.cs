@@ -52,7 +52,26 @@ namespace PRA_B4_FOTOKIOSK.controller
                          * file string is de file van de foto. Bijvoorbeeld:
                          * \fotos\0_Zondag\10_05_30_id8824.jpg
                          */
-                        PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
+                        {
+                            string fileName = Path.GetFileName(file); // bijv. "10_05_30_id8824.jpg"
+                            string[] fileParts = fileName.Split('_');
+
+                            if (fileParts.Length > 3)
+                            {
+                                int hour = int.Parse(fileParts[0]);
+                                int minute = int.Parse(fileParts[1]);
+                                int second = int.Parse(fileParts[2]);
+
+                                DateTime fileDateTime = new DateTime(now.Year, now.Month, now.Day, hour, minute, second);
+
+                                TimeSpan timeDifference = now - fileDateTime;
+
+                                if (timeDifference.TotalMinutes <= 20 && timeDifference.TotalMinutes >= 2)
+                                {
+                                    PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
+                                }
+                            }
+                        }
                     }
             }
 
