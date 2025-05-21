@@ -16,7 +16,8 @@ namespace PRA_B4_FOTOKIOSK.controller
 
         private Dictionary<string, decimal> productPrices = new Dictionary<string, decimal>
         {
-            {"Foto 10x15", 2.55m}
+            {"Foto 10x15", 2.55m},
+            {"Foto 15x20", 4.00m}
         };
         public void Start()
         {
@@ -27,8 +28,13 @@ namespace PRA_B4_FOTOKIOSK.controller
             ShopManager.SetShopReceipt("Eindbedrag\n€");
 
             // Vul de productlijst met producten
-            ShopManager.Products.Add(new KioskProduct() { Name = "Foto 10x15" });
+            ShopManager.Products.Add(new KioskProduct() { Name = "Foto 10x15", Price = 2.55, Description = "Omschrijving 1" });
+            ShopManager.Products.Add(new KioskProduct() { Name = "Foto 15x20", Price = 4.00, Description = "Omschrijving 2" });
 
+            foreach (KioskProduct item in ShopManager.Products)
+            {
+                ShopManager.AddShopPriceList(item.Name + ": €" + item.Price + "\n");
+            }
             // Update dropdown met producten
             ShopManager.UpdateDropDownProducts();
         }
