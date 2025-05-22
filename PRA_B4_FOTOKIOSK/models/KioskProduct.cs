@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PRA_B4_FOTOKIOSK.models
+﻿namespace PRA_B4_FOTOKIOSK.models
 {
     public class KioskProduct
     {
-        public string? Description { get; set; }
-        public int Id { get; set; }
-        public string? Name { get; set; }
-        public double Price { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+        public string Description { get; set; }
+
+        public override string ToString()
+        {
+            return Name; // Dit zorgt dat de ComboBox correct weergeeft
+        }
     }
 }
