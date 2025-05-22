@@ -2,10 +2,6 @@
 using PRA_B4_FOTOKIOSK.models;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PRA_B4_FOTOKIOSK.controller
 {
@@ -14,74 +10,37 @@ namespace PRA_B4_FOTOKIOSK.controller
         private decimal totalAmount = 0m;
         public static Home Window { get; set; }
 
-        private Dictionary<string, decimal> productPrices = new Dictionary<string, decimal>
-        {
-            {"Foto 10x15", 2.55m},
-            {"Foto 15x20", 4.00m}
-        };
         public void Start()
         {
-            // Stel de prijslijst in aan de rechter kant.
-            ShopManager.SetShopPriceList("Prijzen:\nFoto 10x15: €2.55");
-
-            // Stel de bon in onderaan het scherm
-            ShopManager.SetShopReceipt("Eindbedrag\n€");
-
-            // Vul de productlijst met producten
-            ShopManager.Products.Add(new KioskProduct() { Name = "Foto 10x15", Price = 2.55, Description = "Omschrijving 1" });
-            ShopManager.Products.Add(new KioskProduct() { Name = "Foto 15x20", Price = 4.00, Description = "Omschrijving 2" });
-
-            foreach (KioskProduct item in ShopManager.Products)
+            // Maak een lijst van producten aan
+            var producten = new List<KioskProduct>
             {
-                ShopManager.AddShopPriceList(item.Name + ": €" + item.Price + "\n");
+                new KioskProduct { Name = "Foto 10x15", Price = 2.55m, Description = "Kleine standaard foto" },
+                new KioskProduct { Name = "Foto 20x30", Price = 4.95m, Description = "Grote afdruk op glanzend papier" },
+                new KioskProduct { Name = "Foto op canvas", Price = 9.95m, Description = "Luxe canvas print" }
+            };
+
+            // Voeg producten toe aan de ShopManager lijst
+            foreach (var product in producten)
+            {
+                ShopManager.Products.Add(product);
             }
-            // Update dropdown met producten
+
+            // Genereer de prijslijst
+            ShopManager.SetShopPriceList("Prijzen:");
+            foreach (KioskProduct product in ShopManager.Products)
+            {
+                string lijn = $"{product.Name} - {product.Description}: €{product.Price:F2}";
+                ShopManager.AddShopPriceList(lijn);
+            }
+
+            // Update de dropdown
             ShopManager.UpdateDropDownProducts();
+
+            // Initieer de bon
+            ShopManager.SetShopReceipt("Eindbedrag:\n€0.00");
         }
 
-        // Wordt uitgevoerd wanneer er op de Toevoegen knop is geklikt
-        public void AddButtonClick()
-        {
-            KioskProduct selectedProduct = ShopManager.GetSelectedProduct();
-            int? fotoId = ShopManager.GetFotoId();
-            int? amount = ShopManager.GetAmount();
-
-            // Fix: Use the Name property of KioskProduct to get the string key for the dictionary
-            decimal price = productPrices[selectedProduct.Name];
-            decimal subtotal = (decimal)(price * amount);
-            totalAmount += subtotal;
-
-            // Voeg toe aan bon
-            string receiptLine = $"\nFoto {fotoId}: {selectedProduct.Name} x{amount} à €{price} = €{subtotal}";
-            ShopManager.AddShopReceipt(receiptLine);
-
-            // Update totaalbedrag
-            UpdateTotal();
-        }
-        
-
-        // Wordt uitgevoerd wanneer er op de Resetten knop is geklikt
-        public void ResetButtonClick()
-        {
-            totalAmount = 0m;
-            ShopManager.SetShopReceipt("Eindbedrag:");
-        }
-
-        // Wordt uitgevoerd wanneer er op de Save knop is geklikt
-        public void SaveButtonClick()
-        {
-            string receipt = ShopManager.GetShopReceipt();
-        }
-
-        public void UpdateTotal()
-        {
-            string receipt = ShopManager.GetShopReceipt();
-            int lastLineIndex = receipt.LastIndexOf('\n');
-            if (lastLineIndex >= 0)
-            {
-                receipt = receipt.Substring(0, lastLineIndex);
-            }
-            ShopManager.SetShopReceipt($"{receipt}\nTotaal: €{totalAmount.ToString("0.00")}");
-        }
+        // De rest (AddButtonClick etc.) hoort bij C1 en hoef je niet te doen voor B1.
     }
 }
