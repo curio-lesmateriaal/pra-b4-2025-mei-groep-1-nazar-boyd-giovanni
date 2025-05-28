@@ -53,7 +53,7 @@ namespace PRA_B4_FOTOKIOSK.controller
                          * \fotos\0_Zondag\10_05_30_id8824.jpg
                          */
                         {
-                            string fileName = Path.GetFileName(file); // bijv. "10_05_30_id8824.jpg"
+                            string fileName = Path.GetFileName(file); 
                             string[] fileParts = fileName.Split('_');
 
                             if (fileParts.Length > 3)

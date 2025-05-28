@@ -12,5 +12,6 @@ namespace PRA_B4_FOTOKIOSK.models
         public int Id { get; set; }
         public string Source { get; set; }
 
+
     }
 }

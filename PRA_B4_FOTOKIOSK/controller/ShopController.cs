@@ -42,5 +42,20 @@ namespace PRA_B4_FOTOKIOSK.controller
         }
 
         // De rest (AddButtonClick etc.) hoort bij C1 en hoef je niet te doen voor B1.
+        public void AddButtonClick()
+        {
+
+        }
+
+        // Wordt uitgevoerd wanneer er op de Resetten knop is geklikt
+        public void ResetButtonClick()
+        {
+
+        }
+
+        // Wordt uitgevoerd wanneer er op de Save knop is geklikt
+        public void SaveButtonClick()
+        {
+        }
     }
 }
