@@ -36,20 +36,29 @@ namespace PRA_B4_FOTOKIOSK
             // Stel de manager in
             PictureManager.Instance = this;
             ShopManager.Instance = this;
-            ShopController.Window = this;
-            PictureController.Window = this;
-            SearchController.Window = this;
 
             // Maak de controllers
             ShopController = new ShopController();
             PictureController = new PictureController();
             SearchController = new SearchController();
 
-            // Start de paginas
+            // Koppel vensters aan controllers
+            ShopController.Window = this;
+            PictureController.Window = this;
+            SearchController.Window = this;
+
+            // Start de pagina's (vult ook de productenlijst!)
             PictureController.Start();
             ShopController.Start();
             SearchController.Start();
+
+            // ✅ Vul de productdropdown met prijslijst (nu is ShopManager.Products zeker gevuld)
+            foreach (KioskProduct product in ShopManager.Products)
+            {
+                cbProducts.Items.Add($"{product.Name} - €{product.Price:0.00} - {product.Description}");
+            }
         }
+
 
         private void btnShopAdd_Click(object sender, RoutedEventArgs e)
         {

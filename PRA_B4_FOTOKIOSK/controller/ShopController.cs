@@ -34,8 +34,7 @@ namespace PRA_B4_FOTOKIOSK.controller
                 ShopManager.AddShopPriceList(lijn);
             }
 
-            // Update de dropdown
-            ShopManager.UpdateDropDownProducts();
+            
 
             // Initieer de bon
             ShopManager.SetShopReceipt("Eindbedrag:\n€0.00");
