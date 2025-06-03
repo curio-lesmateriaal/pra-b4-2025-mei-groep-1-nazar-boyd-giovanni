@@ -1,29 +1,39 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using PRA_B4_FOTOKIOSK.controller;
+using PRA_B4_FOTOKIOSK.magie;
 using PRA_B4_FOTOKIOSK.models;
-using System;
 
 namespace PRA_B4_FOTOKIOSK
 {
     public partial class Home : Window
     {
         public ShopController ShopController { get; set; }
+        public SearchController SearchController { get; set; }
 
         public Home()
         {
             InitializeComponent();
 
-            // Controller instellen
+            ShopManager.Instance = this;
+            PictureManager.Instance = this;
+            SearchManager.Instance = this;
+
+            // ShopController instellen
             ShopController = new ShopController();
             ShopController.BonUpdated += ToonBon;
 
-            // Prijslijst en producten inladen uit ShopController
+            // Producten en prijslijst uit ShopController laden
             cbProducts.Items.Clear();
             foreach (var product in ShopController.GetProducten())
                 cbProducts.Items.Add($"{product.Name} - €{product.Price:0.00} - {product.Description}");
 
             lbPrices.Content = ShopController.GetPrijslijst();
+
+            // SearchController instellen en koppelen aan dit window
+            SearchController = new SearchController();
+            SearchController.Window = this;
         }
 
         private void ToonBon(string tekst)
@@ -75,20 +85,23 @@ namespace PRA_B4_FOTOKIOSK
             ShowMessage($"Bon opgeslagen als:\n{pad}");
         }
 
-        private void ShowMessage(string message)
+        // Meldingen in een MessageBox tonen
+        public void ShowMessage(string message)
         {
             MessageBox.Show(message, "Melding", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        // Andere tabblad-handlers kun je toevoegen hieronder
+        // Voor de foto's-tab (implementatie naar wens)
         private void btnRefresh_Click(object sender, RoutedEventArgs e)
         {
-            // Voor foto's-tab
+            // Voorbeeld: vernieuw foto's (optioneel invullen)
+            // PictureController.RefreshButtonClick(); // Alleen als je een PictureController hebt
         }
 
+        // Koppeling voor de zoeken-knop
         private void btnZoeken_Click(object sender, RoutedEventArgs e)
         {
-            // Voor zoeken-tab
+            SearchController.SearchButtonClick();
         }
     }
 }
