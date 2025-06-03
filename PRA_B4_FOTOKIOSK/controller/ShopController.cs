@@ -15,8 +15,10 @@ namespace PRA_B4_FOTOKIOSK.controller
         public ShopController()
         {
             producten.Add(new KioskProduct { Name = "Foto 10x15", Price = 2.55m, Description = "Kleine standaard foto" });
-            producten.Add(new KioskProduct { Name = "Foto 20x30", Price = 4.95m, Description = "Grote afdruk op glanzend papier" });
-            producten.Add(new KioskProduct { Name = "Foto op canvas", Price = 9.95m, Description = "Luxe canvas print" });
+            producten.Add(new KioskProduct { Name = "Foto 15x20", Price = 4.00m, Description = "Grote afdruk op glanzend papier" });
+            producten.Add(new KioskProduct { Name = "Sleutelhanger", Price = 7.00m, Description = "Foto in een Keychain" });
+            producten.Add(new KioskProduct { Name = "Mok", Price = 9.33m, Description = "Foto afdruk op een mok" });
+            producten.Add(new KioskProduct { Name = "T-Shirt", Price = 12.69m, Description = "Foto afdruk op T-Shirt" });
         }
 
         public List<KioskProduct> GetProducten() => producten;
