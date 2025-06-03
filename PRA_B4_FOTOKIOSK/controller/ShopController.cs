@@ -1,60 +1,64 @@
-﻿using PRA_B4_FOTOKIOSK.magie;
-using PRA_B4_FOTOKIOSK.models;
+﻿using PRA_B4_FOTOKIOSK.models;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace PRA_B4_FOTOKIOSK.controller
 {
     public class ShopController
     {
-        private decimal totalAmount = 0m;
-        public static Home Window { get; set; }
+        private List<OrderedProduct> bestellingen = new List<OrderedProduct>();
+        private List<KioskProduct> producten = new List<KioskProduct>();
 
-        public void Start()
+        public event Action<string>? BonUpdated;
+
+        public ShopController()
         {
-            // Maak een lijst van producten aan
-            var producten = new List<KioskProduct>
+            producten.Add(new KioskProduct { Name = "Foto 10x15", Price = 2.55m, Description = "Kleine standaard foto" });
+            producten.Add(new KioskProduct { Name = "Foto 20x30", Price = 4.95m, Description = "Grote afdruk op glanzend papier" });
+            producten.Add(new KioskProduct { Name = "Foto op canvas", Price = 9.95m, Description = "Luxe canvas print" });
+        }
+
+        public List<KioskProduct> GetProducten() => producten;
+
+        public string GetPrijslijst()
+        {
+            var sb = new StringBuilder();
+            foreach (var p in producten)
+                sb.AppendLine($"{p.Name}: €{p.Price:0.00} - {p.Description}");
+            return sb.ToString();
+        }
+
+        public void AddProductToReceipt(string fotoId, KioskProduct product, int aantal)
+        {
+            var bestelling = new OrderedProduct
             {
-                new KioskProduct { Name = "Foto 10x15", Price = 2.55m, Description = "Kleine standaard foto" },
-                new KioskProduct { Name = "Foto 20x30", Price = 4.95m, Description = "Grote afdruk op glanzend papier" },
-                new KioskProduct { Name = "Foto op canvas", Price = 9.95m, Description = "Luxe canvas print" }
+                FotoId = fotoId,
+                ProductNaam = product.Name,
+                Aantal = aantal,
+                TotaalPrijs = product.Price * aantal
             };
+            bestellingen.Add(bestelling);
+            UpdateBon();
+        }
 
-            // Voeg producten toe aan de ShopManager lijst
-            foreach (var product in producten)
+        public void ResetReceipt()
+        {
+            bestellingen.Clear();
+            UpdateBon();
+        }
+
+        private void UpdateBon()
+        {
+            decimal totaal = 0;
+            var sb = new StringBuilder();
+            foreach (var b in bestellingen)
             {
-                ShopManager.Products.Add(product);
+                sb.AppendLine(b.ToString());
+                totaal += b.TotaalPrijs;
             }
-
-            // Genereer de prijslijst
-            ShopManager.SetShopPriceList("Prijzen:");
-            foreach (KioskProduct product in ShopManager.Products)
-            {
-                string lijn = $"{product.Name} - {product.Description}: €{product.Price:F2}";
-                ShopManager.AddShopPriceList(lijn);
-            }
-
-            
-
-            // Initieer de bon
-            ShopManager.SetShopReceipt("Eindbedrag:\n€0.00");
-        }
-
-        // De rest (AddButtonClick etc.) hoort bij C1 en hoef je niet te doen voor B1.
-        public void AddButtonClick()
-        {
-
-        }
-
-        // Wordt uitgevoerd wanneer er op de Resetten knop is geklikt
-        public void ResetButtonClick()
-        {
-
-        }
-
-        // Wordt uitgevoerd wanneer er op de Save knop is geklikt
-        public void SaveButtonClick()
-        {
+            sb.AppendLine($"\nEindbedrag:\n€{totaal:0.00}");
+            BonUpdated?.Invoke(sb.ToString());
         }
     }
 }

@@ -1,88 +1,94 @@
-﻿using PRA_B4_FOTOKIOSK.controller;
-using PRA_B4_FOTOKIOSK.magie;
+﻿using System.Windows;
+using System.Windows.Controls;
+using PRA_B4_FOTOKIOSK.controller;
 using PRA_B4_FOTOKIOSK.models;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace PRA_B4_FOTOKIOSK
 {
-    /// <summary>
-    /// Interaction logic for Home.xaml
-    /// </summary>
     public partial class Home : Window
     {
-
         public ShopController ShopController { get; set; }
-        public PictureController PictureController { get; set; }
-        public SearchController SearchController { get; set; }
 
         public Home()
         {
-            // Bouw de UI
             InitializeComponent();
 
-            // Stel de manager in
-            PictureManager.Instance = this;
-            ShopManager.Instance = this;
-
-            // Maak de controllers
+            // Controller instellen
             ShopController = new ShopController();
-            PictureController = new PictureController();
-            SearchController = new SearchController();
+            ShopController.BonUpdated += ToonBon;
 
-            // Koppel vensters aan controllers
-            ShopController.Window = this;
-            PictureController.Window = this;
-            SearchController.Window = this;
-
-            // Start de pagina's (vult ook de productenlijst!)
-            PictureController.Start();
-            ShopController.Start();
-            SearchController.Start();
-
-            // ✅ Vul de productdropdown met prijslijst (nu is ShopManager.Products zeker gevuld)
-            foreach (KioskProduct product in ShopManager.Products)
-            {
+            // Prijslijst en producten inladen uit ShopController
+            cbProducts.Items.Clear();
+            foreach (var product in ShopController.GetProducten())
                 cbProducts.Items.Add($"{product.Name} - €{product.Price:0.00} - {product.Description}");
-            }
+
+            lbPrices.Content = ShopController.GetPrijslijst();
         }
 
+        private void ToonBon(string tekst)
+        {
+            tbReceiptTextBlock.Text = tekst;
+        }
 
         private void btnShopAdd_Click(object sender, RoutedEventArgs e)
         {
-            ShopController.AddButtonClick();
+            string fotoId = tbFotoId.Text.Trim();
+            int idx = cbProducts.SelectedIndex;
+            string amountText = tbAmount.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(fotoId) || idx < 0 || string.IsNullOrWhiteSpace(amountText))
+            {
+                ShowMessage("Vul alle velden in!");
+                return;
+            }
+            if (!int.TryParse(amountText, out int aantal) || aantal < 1)
+            {
+                ShowMessage("Aantal moet een getal > 0 zijn!");
+                return;
+            }
+            var producten = ShopController.GetProducten();
+            KioskProduct? product = idx >= 0 && idx < producten.Count ? producten[idx] : null;
+            if (product == null)
+            {
+                ShowMessage("Onbekend product!");
+                return;
+            }
+            ShopController.AddProductToReceipt(fotoId, product, aantal);
         }
 
         private void btnShopReset_Click(object sender, RoutedEventArgs e)
         {
-            ShopController.ResetButtonClick();
-        }
-
-        private void btnRefresh_Click(object sender, RoutedEventArgs e)
-        {
-            PictureController.RefreshButtonClick();
+            ShopController.ResetReceipt();
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            ShopController.SaveButtonClick();
+            string bonText = tbReceiptTextBlock.Text ?? "";
+            if (string.IsNullOrWhiteSpace(bonText))
+            {
+                ShowMessage("Geen bon om op te slaan.");
+                return;
+            }
+            string pad = $"bon_{DateTime.Now:yyyyMMdd_HHmmss}.txt";
+            System.IO.File.WriteAllText(pad, bonText);
+            ShowMessage($"Bon opgeslagen als:\n{pad}");
+        }
+
+        private void ShowMessage(string message)
+        {
+            MessageBox.Show(message, "Melding", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        // Andere tabblad-handlers kun je toevoegen hieronder
+        private void btnRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            // Voor foto's-tab
         }
 
         private void btnZoeken_Click(object sender, RoutedEventArgs e)
         {
-            SearchController.SearchButtonClick();
+            // Voor zoeken-tab
         }
     }
 }
