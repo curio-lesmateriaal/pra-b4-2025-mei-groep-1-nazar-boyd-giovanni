@@ -3,87 +3,71 @@ using PRA_B4_FOTOKIOSK.models;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
 
 namespace PRA_B4_FOTOKIOSK.controller
 {
     public class PictureController
     {
-        // De window die we laten zien op het scherm
         public static Home Window { get; set; }
-
-
-        // De lijst met fotos die we laten zien
         public List<KioskPhoto> PicturesToDisplay = new List<KioskPhoto>();
 
-
-        // Start methode die wordt aangeroepen wanneer de foto pagina opent.
-        public void Start()
+        // Let op: showMessageBox bepaalt of de MessageBox wordt getoond!
+        public void Start(bool showMessageBox = false)
         {
-
-
             PicturesToDisplay.Clear();
 
-            // Initializeer de lijst met fotos
-            // WAARSCHUWING. ZONDER FILTER LAADT DIT ALLES!
-            // foreach is een for-loop die door een array loopt
+            var now = DateTime.Now;
+            int dayToday = (int)now.DayOfWeek;
+
             foreach (string dir in Directory.GetDirectories(@"../../../fotos"))
             {
-                var now = DateTime.Now;
-                int dayToday = (int)now.DayOfWeek;
+                string folderName = Path.GetFileName(dir);
+                if (!folderName.StartsWith(dayToday.ToString())) continue;
 
-                string folderName = Path.GetFileName(dir); // bijv. "0_Zondag"
-                string[] parts = folderName.Split('_');
+                foreach (string file in Directory.GetFiles(dir))
+                {
+                    string fileName = Path.GetFileName(file);
+                    string tijdStr = fileName.Split("_id")[0].Replace("_", ":");
+                    DateTime fileDate = DateTime.Parse(tijdStr);
 
-
-                if (parts.Length > 0 && int.TryParse(parts[0], out int folderDay) && folderDay == dayToday)
-
-
-                    /**
-                     *
-                     * dir string is de map waar de fotos in staan. Bijvoorbeeld:
-                     * \fotos\0_Zondag
-                     */
-                    foreach (string file in Directory.GetFiles(dir))
+                    if (fileDate >= now.AddMinutes(-30) && fileDate <= now.AddMinutes(-2))
                     {
-                        /**
-                         * file string is de file van de foto. Bijvoorbeeld:
-                         * \fotos\0_Zondag\10_05_30_id8824.jpg
-                         */
+                        bool toegevoegd = false;
+
+                        for (int i = 0; i < PicturesToDisplay.Count; i++)
                         {
-                            string fileName = Path.GetFileName(file); 
-                            string[] fileParts = fileName.Split('_');
+                            string otherName = Path.GetFileName(PicturesToDisplay[i].Source);
+                            string otherTijdStr = otherName.Split("_id")[0].Replace("_", ":");
+                            DateTime otherDate = DateTime.Parse(otherTijdStr);
 
-                            if (fileParts.Length > 3)
+                            if (Math.Abs((fileDate - otherDate).TotalSeconds) == 60)
                             {
-                                int hour = int.Parse(fileParts[0]);
-                                int minute = int.Parse(fileParts[1]);
-                                int second = int.Parse(fileParts[2]);
-
-                                DateTime fileDateTime = new DateTime(now.Year, now.Month, now.Day, hour, minute, second);
-
-                                TimeSpan timeDifference = now - fileDateTime;
-
-                                if (timeDifference.TotalMinutes <= 30 && timeDifference.TotalMinutes >= 2)
-                                {
-                                    PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
-                                }
+                                PicturesToDisplay.Insert(i, new KioskPhoto() { Id = 0, Source = file });
+                                toegevoegd = true;
+                                break;
                             }
                         }
+
+                        if (!toegevoegd)
+                        {
+                            PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
+                        }
                     }
+                }
             }
 
-            // Update de fotos
             PictureManager.UpdatePictures(PicturesToDisplay);
+
+            if (showMessageBox)
+            {
+                MessageBox.Show($"Aantal foto's in overzicht: {PicturesToDisplay.Count}", "A3 Check");
+            }
         }
 
-        // Wordt uitgevoerd wanneer er op de Refresh knop is geklikt
         public void RefreshButtonClick()
         {
-
+            Start(true);
         }
-
     }
 }

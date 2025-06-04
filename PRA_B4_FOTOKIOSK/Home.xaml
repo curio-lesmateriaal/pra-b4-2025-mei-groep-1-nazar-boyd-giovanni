@@ -18,7 +18,7 @@
                 <Grid>
                     <Button x:Name="btnRefresh" Content="Refresh" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" Width="83" Height="28" Click="btnRefresh_Click"/>
                     <ScrollViewer Margin="10,48,10,43">
-                        <WrapPanel x:Name="spPictures"/>
+                        <UniformGrid x:Name="spPictures" Columns="2"/>
                     </ScrollViewer>
                 </Grid>
             </TabItem>

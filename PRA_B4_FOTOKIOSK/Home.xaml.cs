@@ -25,10 +25,10 @@ namespace PRA_B4_FOTOKIOSK
             ShopController = new ShopController();
             ShopController.BonUpdated += ToonBon;
 
-            // PictureController instellen en starten (belangrijk!)
+            // PictureController instellen en meteen starten (geen popup)
             PictureController = new PictureController();
             PictureController.Window = this;
-            PictureController.Start();
+            PictureController.Start(); // Let op: géén true → geen popup
 
             // Producten en prijslijst uit ShopController laden
             cbProducts.Items.Clear();
@@ -100,7 +100,7 @@ namespace PRA_B4_FOTOKIOSK
         // Foto-tab: laadt/refresh de foto's
         private void btnRefresh_Click(object sender, RoutedEventArgs e)
         {
-            PictureController.Start();
+            PictureController.Start(true); // nu WEL een popup
         }
 
         // Koppeling voor de zoeken-knop
