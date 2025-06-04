@@ -13,7 +13,6 @@
     WindowState="Maximized">
     <Grid>
         <TabControl>
-            <!-- Foto's-tab -->
             <TabItem Header="Foto's">
                 <Grid>
                     <Button x:Name="btnRefresh" Content="Refresh" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" Width="83" Height="28" Click="btnRefresh_Click"/>
@@ -22,7 +21,6 @@
                     </ScrollViewer>
                 </Grid>
             </TabItem>
-            <!-- Kassa-tab -->
             <TabItem Header="Kassa">
                 <Grid>
                     <Label Content="Foto-id:" HorizontalAlignment="Left" Margin="100,192,0,0" VerticalAlignment="Top" Height="24" Width="255"/>
@@ -35,16 +33,13 @@
                     <Button x:Name="btnShopReset" Content="Resetten" HorizontalAlignment="Left" Margin="278,383,0,0" VerticalAlignment="Top" Width="147" Click="btnShopReset_Click"/>
                     <Label x:Name="lbPrices" Content="" HorizontalAlignment="Left" Margin="1065,174,0,0" VerticalAlignment="Top" Height="536" Width="695"/>
 
-                    <!-- VERBORGEN LABEL tbv magie -->
                     <Label x:Name="lbReceipt" Visibility="Collapsed"/>
 
-                    <!-- Zichtbare bon voor de gebruiker -->
                     <TextBlock x:Name="tbReceiptTextBlock" Margin="100,442,0,0" VerticalAlignment="Top" Height="392" Width="325" FontSize="16" TextWrapping="Wrap"/>
 
                     <Button x:Name="btnSave" Content="Bon Opslaan" HorizontalAlignment="Left" Margin="17,740,0,0" VerticalAlignment="Top" Width="83" Height="28" Click="btnSave_Click"/>
                 </Grid>
             </TabItem>
-            <!-- Zoeken-tab -->
             <TabItem Header="Zoeken">
                 <Grid>
                     <Label Content="Zoeken:" HorizontalAlignment="Left" Margin="100,53,0,0" VerticalAlignment="Top" Height="24" Width="255"/>

@@ -7,18 +7,14 @@ namespace PRA_B4_FOTOKIOSK.controller
 {
     public class SearchController
     {
-        // Statische referentie naar je hoofdscherm
         public Home Window { get; set; }
 
-        // Start-methode, kan leeg blijven
         public void Start()
         {
         }
 
-        // Wordt uitgevoerd wanneer er op de Zoeken knop is geklikt
         public void SearchButtonClick()
         {
-            // 1. Haal de zoekinput op via de magie (bijv. "10:10:22" of "id1111")
             string input = SearchManager.GetSearchInput();
 
             if (string.IsNullOrWhiteSpace(input))
@@ -27,7 +23,6 @@ namespace PRA_B4_FOTOKIOSK.controller
                 return;
             }
 
-            // 2. Zoek door alle foto's heen (bijvoorbeeld in "fotos"-map onder je projectdirectory)
             string fotosMap = Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\fotos"));
 
             if (!Directory.Exists(fotosMap))
@@ -38,7 +33,6 @@ namespace PRA_B4_FOTOKIOSK.controller
 
             var alleFotos = Directory.GetFiles(fotosMap, "*.jpg", SearchOption.AllDirectories);
 
-            // Normaliseer input voor zoeken (maak het vergelijkbaar met bestandsnaam)
             string inputNormalized = input.Replace("-", "").Replace(":", "").Replace(" ", "").ToLower();
 
             string gevondenFoto = alleFotos.FirstOrDefault(f =>
@@ -46,11 +40,9 @@ namespace PRA_B4_FOTOKIOSK.controller
 
             if (gevondenFoto != null)
             {
-                // Toon de foto in de UI
                 SearchManager.SetPicture(gevondenFoto);
 
-                // Parse dag, tijd en id netjes uit de bestandsnaam en map
-                var naam = Path.GetFileNameWithoutExtension(gevondenFoto); // bijv. "10_10_22_id1111"
+                var naam = Path.GetFileNameWithoutExtension(gevondenFoto); 
                 var delen = naam.Split('_');
                 string tijd = "";
                 string id = "";

@@ -12,7 +12,6 @@ namespace PRA_B4_FOTOKIOSK.controller
         public static Home Window { get; set; }
         public List<KioskPhoto> PicturesToDisplay = new List<KioskPhoto>();
 
-        // Let op: showMessageBox bepaalt of de MessageBox wordt getoond!
         public void Start(bool showMessageBox = false)
         {
             PicturesToDisplay.Clear();
