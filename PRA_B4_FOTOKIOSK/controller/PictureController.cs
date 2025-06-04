@@ -66,7 +66,7 @@ namespace PRA_B4_FOTOKIOSK.controller
 
                                 TimeSpan timeDifference = now - fileDateTime;
 
-                                if (timeDifference.TotalMinutes <= 20 && timeDifference.TotalMinutes >= 2)
+                                if (timeDifference.TotalMinutes <= 30 && timeDifference.TotalMinutes >= 2)
                                 {
                                     PicturesToDisplay.Add(new KioskPhoto() { Id = 0, Source = file });
                                 }

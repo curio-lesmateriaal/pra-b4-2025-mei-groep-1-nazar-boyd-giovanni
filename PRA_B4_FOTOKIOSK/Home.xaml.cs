@@ -10,6 +10,7 @@ namespace PRA_B4_FOTOKIOSK
     public partial class Home : Window
     {
         public ShopController ShopController { get; set; }
+        public PictureController PictureController { get; set; }
         public SearchController SearchController { get; set; }
 
         public Home()
@@ -23,6 +24,11 @@ namespace PRA_B4_FOTOKIOSK
             // ShopController instellen
             ShopController = new ShopController();
             ShopController.BonUpdated += ToonBon;
+
+            // PictureController instellen en starten (belangrijk!)
+            PictureController = new PictureController();
+            PictureController.Window = this;
+            PictureController.Start();
 
             // Producten en prijslijst uit ShopController laden
             cbProducts.Items.Clear();
@@ -91,11 +97,10 @@ namespace PRA_B4_FOTOKIOSK
             MessageBox.Show(message, "Melding", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        // Voor de foto's-tab (implementatie naar wens)
+        // Foto-tab: laadt/refresh de foto's
         private void btnRefresh_Click(object sender, RoutedEventArgs e)
         {
-            // Voorbeeld: vernieuw foto's (optioneel invullen)
-            // PictureController.RefreshButtonClick(); // Alleen als je een PictureController hebt
+            PictureController.Start();
         }
 
         // Koppeling voor de zoeken-knop
